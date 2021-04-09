@@ -2,38 +2,20 @@
 {% load static %}<!--載入static資料夾-->
 {% block content %}
 <div class="row">
+    {% for product in products %} <!--用for迴圈載入產品-->
 	<div class="col-lg-4">
-        <img class="thumbnail" src="{% static 'images/placeholder.png' %}">
+        <img class="thumbnail" src="{{ product.image.url }}"> <!--載入圖片網址-->
 		<div class="box-element product">
-            <h6><strong>產品1</strong></h6>
+            <h6><strong>{{ product.name }}</strong></h6>
             <hr>
             <button class="btn btn-outline-secondary add-btn">加入購物車</button>
             <a class="btn btn-outline-success" href="#">View</a>
-            <h4 style="display: inline-block; float: right">$20</h4>
+            <h4 style="display: inline-block; float: right"><strong>
+                ${{ product.price|floatformat:2 }} <!--到小數點後第二位-->
+            </strong></h4>
 		</div>
 	</div>
-
-	<div class="col-lg-4">
-        <img class="thumbnail" src="{% static 'images/placeholder.png' %}">
-		<div class="box-element product">
-            <h6><strong>產品2</strong></h6>
-                        <hr>
-            <button class="btn btn-outline-secondary add-btn">加入購物車</button>
-            <a class="btn btn-outline-success" href="#">View</a>
-            <h4 style="display: inline-block; float: right">$20</h4>
-		</div>
-	</div>
-
-	<div class="col-lg-4">
-        <img class="thumbnail" src="{% static 'images/placeholder.png' %}">
-		<div class="box-element product">
-            <h6><strong>產品3</strong></h6>
-                        <hr>
-            <button class="btn btn-outline-secondary add-btn">加入購物車</button>
-            <a class="btn btn-outline-success" href="#">View</a>
-            <h4 style="display: inline-block; float: right">$20</h4>
-
-		</div>
+    {% endfor %}
 	</div>
 </div>
 {% endblock %}

@@ -16,7 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from django.conf.urls.static import static  # 導入靜態函數
+from django.conf import settings
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include('store.urls'))
 ]
+
+urlpatterns += static(settings.MEDIA_URL,
+                      document_root=settings.MEDIA_ROOT)  # 設置媒體路徑，可直接從網址看到照片 ex:http://127.0.0.1:8000/images/coding.png
