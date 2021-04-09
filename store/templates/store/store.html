@@ -4,7 +4,7 @@
 <div class="row">
     {% for product in products %} <!--用for迴圈載入產品-->
 	<div class="col-lg-4">
-        <img class="thumbnail" src="{{ product.image.url }}"> <!--載入圖片網址-->
+        <img class="thumbnail" src="{{ product.imageURL }}"> <!--載入圖片網址-->
 		<div class="box-element product">
             <h6><strong>{{ product.name }}</strong></h6>
             <hr>

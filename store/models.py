@@ -41,12 +41,29 @@ class Order(models.Model):
     def __str__(self):
         return str(self.id)
 
+    @property
+    def get_cart_total(self):
+        orderitems = self.orderitem_set.all()
+        total = sum([item.get_total for item in orderitems])
+        return total
+
+    @property
+    def get_cart_items(self):
+        orderitems = self.orderitem_set.all()
+        count = sum([item.quantity for item in orderitems])  # 查看每個OrderItem.quantity相加
+        return count
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)  # 數量
     data_added = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def get_total(self):  # 取得個別總價
+        total = self.product.price * self.quantity  # 產品價格*數量
+        return total
 
 
 class ShippingAddress(models.Model):
