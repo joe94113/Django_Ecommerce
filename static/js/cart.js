@@ -23,7 +23,7 @@ function addCookieItem(productId, action){
         if(cart[productId] == undefined){  // main.html裡的var cart
             cart[productId] = {'quantity': 1}
         }else{
-            cart[productId]['quantity'] + 1
+            cart[productId]['quantity']  +=  1
         }
 
     if(action == 'remove'){
