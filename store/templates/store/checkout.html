@@ -5,6 +5,7 @@
     <div class="col-lg-6">
         <div class="box-element" id="form-wrapper">
             <form id="form">
+                {% csrf_token %}
                 <div id="user-info">
                     <div class="form-field">
                         <input required class="form-control" type="text" name="name" placeholder="Name..">
@@ -69,90 +70,91 @@
 </div>
 
 <script type="text/javascript">
-var shipping = '{{ order.shipping }}'
-var total = '{{ order.get_cart_total }}'
+    var shipping = '{{ order.shipping }}'
+    var total = '{{ order.get_cart_total }}'
 
-if (shipping == 'False') {
-    document.getElementById('shipping-info').innerHTML = '' // 找到<div id="user-info">元素
-}
-
-if (user != 'AnonymousUser') { // 如果用戶登入狀態，隱藏名稱與emil表格
-    document.getElementById('user-info').innerHTML = ''
-}
-
-if (shipping == 'False' && user != 'AnonymousUser') {
-    // 如果用戶已登錄，而且產品為實體，則隱藏表格
-    document.getElementById('form-wrapper').classList.add("hidden");
-    //如果登陸用戶想購買虛擬商品，則顯示付款
-    document.getElementById('payment-info').classList.remove("hidden");
-}
-
-var form = document.getElementById('form') // 找到form元素
-
-form.addEventListener('submit', function(e) { // 監聽如果form送出
-    e.preventDefault()
-    console.log('From submitted...')
-    document.getElementById('form-button').classList.add('hidden')
-    document.getElementById('payment-info').classList.remove('hidden')
-})
-
-document.getElementById('make-payment').addEventListener('click', function(e) {
-    submitFormData()
-})
-
-function submitFormData() {
-    console.log('Payment button cilcked')
-
-    var userFormData = {
-        'name': null,
-        'email': null,
-        'total': total,
+    if (shipping == 'False') {
+        document.getElementById('shipping-info').innerHTML = '' // 找到<div id="user-info">元素
     }
 
-    var shippingInfo = {
-        'address': null,
-        'city': null,
-        'state': null,
-        'zipcode': null,
+    if (user != 'AnonymousUser') { // 如果用戶登入狀態，隱藏名稱與emil表格
+        document.getElementById('user-info').innerHTML = ''
     }
 
-    if (shipping != 'False') { // 找到表單裡資料帶入
-        shippingInfo.address = form.address.value
-        shippingInfo.city = form.city.value
-        shippingInfo.state = form.state.value
-        shippingInfo.zipcode = form.zipcode.value
+    if (shipping == 'False' && user != 'AnonymousUser') {
+        // 如果用戶已登錄，而且產品為實體，則隱藏表格
+        document.getElementById('form-wrapper').classList.add("hidden");
+        //如果登陸用戶想購買虛擬商品，則顯示付款
+        document.getElementById('payment-info').classList.remove("hidden");
     }
 
-    if (user == 'AnonymousUser') { // 找到表單裡資料帶入
-        userFormData.name = form.name.value
-        userFormData.email = form.email.value
-    }
+    var form = document.getElementById('form') // 找到form元素
+    csrftoken = form.getElementByTagName("input")[0].value  // 取得csrftoken
 
-    // console.log('shipping Info:', shippingInfo)
-    // console.log('userFormData:', userFormData)
+    form.addEventListener('submit', function(e) { // 監聽如果form送出
+        e.preventDefault()
+        console.log('From submitted...')
+        document.getElementById('form-button').classList.add('hidden')
+        document.getElementById('payment-info').classList.remove('hidden')
+    })
 
-    var url = '/process_order/'
+    document.getElementById('make-payment').addEventListener('click', function(e) {
+        submitFormData()
+    })
 
-    fetch(url, {
-            method: 'POST', // or 'PUT'
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            body: JSON.stringify({
-                'form': userFormData,
-                'shipping': shippingInfo
+    function submitFormData() {
+        console.log('Payment button cilcked')
+
+        var userFormData = {
+            'name': null,
+            'email': null,
+            'total': total,
+        }
+
+        var shippingInfo = {
+            'address': null,
+            'city': null,
+            'state': null,
+            'zipcode': null,
+        }
+
+        if (shipping != 'False') { // 找到表單裡資料帶入
+            shippingInfo.address = form.address.value
+            shippingInfo.city = form.city.value
+            shippingInfo.state = form.state.value
+            shippingInfo.zipcode = form.zipcode.value
+        }
+
+        if (user == 'AnonymousUser') { // 找到表單裡資料帶入
+            userFormData.name = form.name.value
+            userFormData.email = form.email.value
+        }
+
+        // console.log('shipping Info:', shippingInfo)
+        // console.log('userFormData:', userFormData)
+
+        var url = '/process_order/'
+
+        fetch(url, {
+                method: 'POST', // or 'PUT'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({
+                    'form': userFormData,
+                    'shipping': shippingInfo
+                })
             })
-        })
 
-        .then((response) => response.json())
+            .then((response) => response.json())
 
-        .then((data) => {
-            console.log('Success:', data);
-            alert('Transaction completed'); // 發出交易完成的警報
-            window.location.href = "{% url 'store' %}" // 帶使用者回首頁
-        })
-}
+            .then((data) => {
+                console.log('Success:', data);
+                alert('Transaction completed'); // 發出交易完成的警報
+                window.location.href = "{% url 'store' %}" // 帶使用者回首頁
+            })
+    }
 </script>
 
 {% endblock %}

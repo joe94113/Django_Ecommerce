@@ -15,7 +15,7 @@ class Customer(models.Model):
 
 class Product(models.Model):  # 產品模型代表我們在商店中擁有的產品類型
     name = models.CharField(max_length=200, null=True)
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=7, decimal_places=2)
     digital = models.BooleanField(default=False, null=True, blank=False)  # 判斷是物理還是數位商品
     image = models.ImageField(null=True, blank=True)
 
