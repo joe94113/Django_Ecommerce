@@ -3,7 +3,7 @@ var updateBtns = document.getElementsByClassName('update-cart') //取得class="u
 for(var i = 0; i < updateBtns.length; i++){
     updateBtns[i].addEventListener("click", function(){
         var productId = this.dataset.product  // 讀取到data-product="{{ product.id }}"資料
-        var action = this.dataset.action  // 讀取到data-action="add"資料
+        var action = this.dataset.action  // 讀取到data-action="add" or "remove"資料
         console.log("productId:", productId, "action", action)
 
         console.log('USER:', user)
@@ -36,5 +36,7 @@ function updateUserOrder(productId, action){  // 更新用戶訂單
 
     .then((data) => {
         console.log('data:', data)
+        location.reload()  // 畫面重新載入
+
     })
 }
