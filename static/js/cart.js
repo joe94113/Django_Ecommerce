@@ -4,10 +4,10 @@ for(var i = 0; i < updateBtns.length; i++){
     updateBtns[i].addEventListener("click", function(){
         var productId = this.dataset.product  // 讀取到data-product="{{ product.id }}"資料
         var action = this.dataset.action  // 讀取到data-action="add" or "remove"資料
-        console.log("productId:", productId, "action", action)
+        console.log("productId:", productId, "action:", action)
 
         console.log('USER:', user)
-        if(user === 'AnonymousUser'){
+        if(user == 'AnonymousUser'){
             addCookieItem(productId, action)
         }else{
             updateUserOrder(productId, action)
@@ -24,19 +24,20 @@ function addCookieItem(productId, action){
             cart[productId] = {'quantity': 1}
         }else{
             cart[productId]['quantity']  +=  1
-        }
+            }
+    }
 
     if(action == 'remove'){
-        cart[productId]['quantity'] -= 1
-        
+        cart[productId]['quantity']  -=  1
         if(cart[productId]['quantity'] <= 0){
                 console.log("Remove Item")
-                delete cart[productId]
+                delete cart[productId];
             }
         }
-    }
+
     console.log("Cart:", cart)
     document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
     location.reload()
 }
 
