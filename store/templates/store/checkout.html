@@ -89,7 +89,8 @@
     }
 
     var form = document.getElementById('form') // 找到form元素
-    csrftoken = form.getElementByTagName("input")[0].value  // 取得csrftoken
+    // csrftoken = form.getElementsByTagName("input")[0].value  // 取得csrftoken
+    // console.log('Newtoken:', form.getElementsByTagName("input")[0].value )
 
     form.addEventListener('submit', function(e) { // 監聽如果form送出
         e.preventDefault()
@@ -152,6 +153,10 @@
             .then((data) => {
                 console.log('Success:', data);
                 alert('Transaction completed'); // 發出交易完成的警報
+
+                cart = {}  // 清除cookies
+                document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
                 window.location.href = "{% url 'store' %}" // 帶使用者回首頁
             })
     }

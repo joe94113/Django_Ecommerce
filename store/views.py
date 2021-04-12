@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from .models import *  # 載入所有models
-from .utils import cookieCart, cartData
+from .utils import cookieCart, cartData, guestOrder
 
 
 # Create your views here.
@@ -75,23 +75,25 @@ def processOrder(request):
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer,
                                                      complete=False)
-        total = float(data['form']['total'])
-        order.transaction_id = transaction_id
-
-        if total == float(order.get_cart_total):  # 前後端金額相同，防止從前端更改
-            order.complete = True  # 訂單狀態改成完成
-        order.save()
-
-        if order.shipping:
-            ShippingAddress.objects.create(
-                customer=customer,
-                order=order,
-                address=data['shipping']['address'],
-                city=data['shipping']['city'],
-                state=data['shipping']['state'],
-                zip_code=data['shipping']['zipcode'],
-            )
 
     else:
-        print("User is not logged in..")
+        customer, order = guestOrder(request, data)
+
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
+
+    if total == float(order.get_cart_total):  # 前後端金額相同，防止從前端更改
+        order.complete = True  # 訂單狀態改成完成
+    order.save()
+
+    if order.shipping:
+        ShippingAddress.objects.create(
+            customer=customer,
+            order=order,
+            address=data['shipping']['address'],
+            city=data['shipping']['city'],
+            state=data['shipping']['state'],
+            zip_code=data['shipping']['zipcode'],
+        )
+
     return JsonResponse("Payment submitted..", safe=False)
